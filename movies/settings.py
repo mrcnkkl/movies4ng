@@ -9,7 +9,7 @@ if ENVIRONMENT == 'Prod':
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['movies4ng.herokuapp.com']
 
 INSTALLED_APPS = [
     'movies_app',
@@ -57,6 +57,11 @@ if ENVIRONMENT == 'Dev':
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+
+from dj_database_url import parse as dburl
+
+default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+
 if ENVIRONMENT == 'Prod':
     DATABASE = {
         'ENGINE': '',
@@ -93,6 +98,8 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [],
