@@ -1,7 +1,7 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ENVIRONMENT = os.getenvb('M4NG_ENV', default='Dev')
+ENVIRONMENT = os.getenv('M4NG_ENV', default='Dev')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 if ENVIRONMENT == 'Prod':
