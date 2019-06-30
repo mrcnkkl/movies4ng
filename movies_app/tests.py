@@ -1,7 +1,7 @@
 from django.test import TestCase
 import datetime
 from .utils import str_to_date, resp_str_to_movie_object
-from .models import Movie
+from .models import Movie, MovieComment
 from .rest_client import OmdbClient
 
 
@@ -34,7 +34,7 @@ class UtilsTest(TestCase):
         self.assertTrue(resp_str_to_movie_object(self.RESPONSE_BATMAN))
         self.assertIsInstance(resp_str_to_movie_object(self.RESPONSE_BATMAN), Movie)
         self.assertEqual(resp_str_to_movie_object(self.RESPONSE_BATMAN).title, 'Batman')
-        self.assertEqual(resp_str_to_movie_object(self.RESPONSE_BATMAN).year, 1989)
+        self.assertEqual(resp_str_to_movie_object(self.RESPONSE_BATMAN).year, '1989')
         self.assertEqual(resp_str_to_movie_object(self.RESPONSE_BATMAN).released,
                          datetime.date(year=1989, month=6, day=23))
         self.assertEqual(resp_str_to_movie_object(self.RESPONSE_BATMAN).genre, 'Action, Adventure')
@@ -44,7 +44,7 @@ class OmdbClientTest(TestCase):
 
     def setUp(self) -> None:
         self.client = OmdbClient()
-        self.movie = self.client.get_movie_by_title('batman')
+        self.movie = self.client.get_movie_by_title(title='batman')
         pass
 
     def tearDown(self) -> None:
@@ -53,8 +53,25 @@ class OmdbClientTest(TestCase):
     def test_get_movie_by_title(self):
         self.assertIsInstance(self.movie, Movie)
         self.assertEqual(self.movie.title, 'Batman')
-        self.assertEqual(self.movie.year, 1989)
+        self.assertEqual(self.movie.year, '1989')
         self.assertEqual(self.movie.released,
                          datetime.date(year=1989, month=6, day=23))
         self.assertEqual(self.movie.genre, 'Action, Adventure')
         pass
+
+
+class ModelsTest(TestCase):
+
+    def setUp(self) -> None:
+        pass
+
+    def tearDown(self) -> None:
+        pass
+
+    def test_is_instance_movie(self):
+        movie = Movie.create(title="TEST", year=2000, released=datetime.date(year=2000, month=1, day=1), genre="TEST")
+        self.assertIsInstance(movie, Movie)
+
+    def test_is_instance_moviecomment(self):
+        comment = MovieComment.create("TEST COMMENT", Movie())
+        self.assertIsInstance(comment, MovieComment)

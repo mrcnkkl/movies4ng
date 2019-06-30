@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.forms.models import model_to_dict
 from .models import Movie, MovieComment
 from rest_framework import viewsets
 from .serializers import MovieSerializer, MovieCommentSerializer, TopCommentSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from .utils import *
+from .rest_client import OmdbClient
 
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -12,22 +14,27 @@ class MovieViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         title = request.data['title']
+        movie_qs = Movie.objects.filter(title__iexact=title.strip())
+        if not movie_qs:
+            #TODO: Exception handling
+            fetched_movie = OmdbClient.get_movie_by_title(title)
+            if not fetched_movie:
+                return Response({"Response": False, "Error": "Movie not found!"}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                fetched_movie.save()
+                serializer = MovieSerializer(fetched_movie, many=False)
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED)
+        else:
+            movie = movie_qs.first()
+            serializer = MovieSerializer(movie, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
+    # def list(self, request, *args, **kwargs):
+    #     import pdb; pdb.set_trace()
 
-    # def create(self, request, *args, **kwargs):
-    #     print(f'\n\n-------------------------------------------------\n ')
-    #     print(f'\n\n\n {request.data}\n\n\n')
-    #     print(f'\n-----------------------------------------------------\n\n')
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        d = {'error':'dupa', 'message':'dupa2'}
-        return Response(d, status=status.HTTP_201_CREATED)
-
-
-
+    # def retrieve(self, request, *args, **kwargs):
+    #     import pdb; pdb.set_trace()
 
 
 class MovieCommentViewSet(viewsets.ModelViewSet):
@@ -42,4 +49,3 @@ class TopCommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = MovieComment.objects.all().filter(id=1)
         return queryset
-
