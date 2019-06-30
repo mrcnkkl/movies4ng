@@ -1,13 +1,11 @@
 import os
+from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENVIRONMENT = os.getenv('M4NG_ENV', default='Dev')
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
-if ENVIRONMENT == 'Prod':
-    DEBUG = False
-else:
-    DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['movies4ng.herokuapp.com']
 
@@ -59,21 +57,14 @@ if ENVIRONMENT == 'Dev':
     }
 
 from dj_database_url import parse as dburl
-
 default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
-
-# if ENVIRONMENT == 'Prod':
-#     DATABASE = {
-#         'ENGINE': '',
-#         'NAME': None,
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# }
+DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl)}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
