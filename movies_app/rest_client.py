@@ -5,7 +5,6 @@ from .utils import resp_str_to_movie_object
 
 KEY = os.environ.get('OMDB_API_KEY')
 
-
 class OmdbClient:
 
     @staticmethod

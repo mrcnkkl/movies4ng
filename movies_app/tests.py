@@ -23,9 +23,6 @@ class UtilsTest(TestCase):
                                '"imdbRating":"7.6","imdbVotes":"313,177","imdbID":"tt0096895","Type":"movie","DVD":"25 Mar 1997",' \
                                '"BoxOffice":"N/A","Production":"Warner Bros. Pictures","Website":"N/A","Response":"True"}'
 
-    def tearDown(self) -> None:
-        pass
-
     def test_str_to_date(self):
         self.assertIsInstance(str_to_date(self.DATE_STR), datetime.date)
         self.assertEqual(str_to_date(self.DATE_STR), self.DATE_OBJ)
@@ -47,9 +44,6 @@ class OmdbClientTest(TestCase):
         self.movie = self.client.get_movie_by_title(title='batman')
         pass
 
-    def tearDown(self) -> None:
-        pass
-
     def test_get_movie_by_title(self):
         self.assertIsInstance(self.movie, Movie)
         self.assertEqual(self.movie.title, 'Batman')
@@ -61,12 +55,6 @@ class OmdbClientTest(TestCase):
 
 
 class ModelsTest(TestCase):
-
-    def setUp(self) -> None:
-        pass
-
-    def tearDown(self) -> None:
-        pass
 
     def test_is_instance_movie(self):
         movie = Movie.create(title="TEST", year=2000, released=datetime.date(year=2000, month=1, day=1), genre="TEST")
