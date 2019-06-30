@@ -14,7 +14,7 @@ class Movie(models.Model):
         return movie
 
     def __str__(self):
-        return f'Movie(title={self.title}, genre={self.genre})'
+        return f'Movie(title={self.title}, genre={self.genre}, total_comments={self.total_comments})'
 
     class Meta:
         ordering = ['total_comments']
@@ -28,3 +28,6 @@ class MovieComment(models.Model):
     def create(cls, content: str, movie: Movie):
         comment = cls(content=content, movie=movie)
         return comment
+
+    def __str__(self):
+        return f'MovieComment(movie={self.movie.title}, content={self.content})'
