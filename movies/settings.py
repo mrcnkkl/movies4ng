@@ -62,14 +62,17 @@ from dj_database_url import parse as dburl
 
 default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 
-if ENVIRONMENT == 'Prod':
-    DATABASE = {
-        'ENGINE': '',
-        'NAME': None,
-    }
+# if ENVIRONMENT == 'Prod':
+#     DATABASE = {
+#         'ENGINE': '',
+#         'NAME': None,
+#     }
 
 DATABASES = {
-    'default': DATABASE
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
