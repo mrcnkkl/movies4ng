@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from .utils import *
+from django.db.models import ObjectDoesNotExist
 from .rest_client import OmdbClient
 from .models import Movie, MovieComment
 from .serializers import MovieSerializer, MovieCommentSerializer, TopCommentSerializer
@@ -43,7 +44,11 @@ class MovieCommentViewSet(viewsets.ModelViewSet):
         return comments
 
     def create(self, request, *args, **kwargs):
-        movie = Movie.objects.get(pk=request.data['movie_id'])
+        movie_id = request.data['movie_id']
+        try:
+            movie = Movie.objects.get(pk=movie_id)
+        except ObjectDoesNotExist:
+            return Response({"error": f"No movie with id: {movie_id}"})
         movie.total_comments += 1
         movie.save()
         comment = MovieComment.create(content=request.data['content'], movie=movie)
@@ -53,9 +58,6 @@ class MovieCommentViewSet(viewsets.ModelViewSet):
 
 
 class TopCommentViewSet(viewsets.ModelViewSet):
-    # queryset = MovieComment.objects.filter(id=1)
-    serializer_class = TopCommentSerializer
-
-    def get_queryset(self):
-        queryset = MovieComment.objects.all().filter(id=1)
-        return queryset
+    def list(self, request, *args, **kwargs):
+        queryset = Movie.objects.all()
+        return Response(group_by_comm_quant(queryset), status=status.HTTP_200_OK)

@@ -1,7 +1,8 @@
-# movies4ng
+## movies4ng
 Basic movie database interacting with external API, exposing own API
 
 POST /movies:
+
         ​Request body should contain only movie title, and its presence should be validated.
         Based on passed title, other movie details should be fetched from http://www.omdbapi.com/ (or other similar, public movie database) - and saved to application database.
         Request response should include full movie object, along with all data fetched from external API.
@@ -20,6 +21,7 @@ GET /comments:
 
         ​Should fetch list of all comments present in application database.
         Should allow filtering comments by associated movie, by passing its ID.
+        (example: /comments?movie_id=10)
 
 GET /top:
 
